@@ -13,10 +13,16 @@ API_HASH = getenv("API_HASH")
 # Get your token from @BotFather on Telegram.
 BOT_TOKEN = getenv("BOT_TOKEN")
 
+# Get your MongoDB URI from environment variables
 MONGO_DB_URI = getenv("MONGO_DB_URI")
 if not MONGO_DB_URI:
-    raise SystemExit("[ERROR] - MONGO_DB_URI is not set in environment variables! Please add it in Render's Environment settings.")
+    raise SystemExit("[ERROR] - MONGO_DB_URI is not set! Please add it in your environment variables.")
 
+# Duration limit in minutes (default: 60)
+try:
+    DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 60))
+except ValueError:
+    raise SystemExit("[ERROR] - DURATION_LIMIT must be an integer.")
 # Chat id of a group for logging bot's activities
 log_group = getenv("LOG_GROUP_ID")
 LOG_GROUP_ID = int(log_group) if log_group is not None else None
@@ -122,6 +128,7 @@ if SUPPORT_GROUP:
         raise SystemExit(
             "[ERROR] - Your SUPPORT_GROUP url is wrong. Please ensure that it starts with https://"
         )
+
 
 
 
