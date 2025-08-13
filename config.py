@@ -3,6 +3,9 @@ from os import getenv
 
 from dotenv import load_dotenv
 from pyrogram import filters
+import certifi
+from pymongo import MongoClient
+from os import getenv
 
 load_dotenv()
 
@@ -13,11 +16,26 @@ API_HASH = getenv("API_HASH")
 # Get your token from @BotFather on Telegram.
 BOT_TOKEN = getenv("BOT_TOKEN")
 
-# Get your MongoDB URI from environment variables
+# Load MongoDB URI
 MONGO_DB_URI = getenv("MONGO_DB_URI")
 if not MONGO_DB_URI:
     raise SystemExit("[ERROR] - MONGO_DB_URI is not set! Please add it in your environment variables.")
 
+# Connect to MongoDB with SSL CA certificate
+mongo_client = MongoClient(MONGO_DB_URI, tlsCAFile=certifi.where())
+db = mongo_client.get_database()
+
+# Duration limit in minutes (default: 60)
+try:
+    DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 60))
+except ValueError:
+    raise SystemExit("[ERROR] - DURATION_LIMIT must be an integer.")
+
+# Convert to seconds
+def time_to_seconds(time):
+    return sum(int(x) * 60**i for i, x in enumerate(reversed(str(time).split(":"))))
+
+DURATION_LIMIT = time_to_seconds(f"{DURATION_LIMIT_MIN}:00")
 # Duration limit in minutes (default: 60)
 try:
     DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 60))
@@ -128,6 +146,7 @@ if SUPPORT_GROUP:
         raise SystemExit(
             "[ERROR] - Your SUPPORT_GROUP url is wrong. Please ensure that it starts with https://"
         )
+
 
 
 
