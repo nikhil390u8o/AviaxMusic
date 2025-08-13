@@ -1,3 +1,4 @@
+certifi
 pymongo[srv]==4.8.0
 aiofiles
 aiohttp
@@ -26,4 +27,3 @@ uvloop; sys_platform != "win32"
 yt-dlp
 youtube-search
 youtube-search-python
-
